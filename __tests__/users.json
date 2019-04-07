@@ -1,9 +1,0 @@
-{
-  "User": {
-    "active": true,
-    "roles": [],
-    "authentication_method": "hash",
-    "authenticated": false,
-    "hash": "4c52eae4b3d22288d597d1d1e39593d5cb4d4a20f83570aebd928eca64332e06e1b40d9c685020890127ba9e1571636675a851270bc49bf777d2c895230caef6f31c88c659b0fc67bfc5f29e311b8eb931b0fde447e8af9d6430456c419e33f5c1bc28aec034cd23efb9c03742fc81a5844e7484f734d7469e0d9602163ec2b9"
-  }
-}
