@@ -23,7 +23,6 @@ from wiki.web import current_wiki
 from wiki.web import current_users
 from wiki.web.user import protect
 
-from filelock import Timeout, FileLock
 from time import sleep
 
 bp = Blueprint('wiki', __name__)
