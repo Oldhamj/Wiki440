@@ -187,18 +187,27 @@ class Page(object):
             f.write(str(datetime.datetime.now()))
 
     def isLocked(self):
-        if os.path.isfile(self.lock_path):
-            with open(self.lock_path, 'r', encoding='utf-8') as f:
-                fileString = f.read()
+        if self.lockExists():
+            fileString = self.readLockFile()
 
-            timeFormat = '%Y-%m-%d %H:%M:%S.%f'
-            oldTime = datetime.datetime.strptime(fileString, timeFormat)
-            now = datetime.datetime.now()
-            timedelta = now - oldTime
-            timedelta = timedelta.total_seconds()
-            return timedelta < 60
-
+            return self.getTimedelta(fileString) < 60
         return False
+
+    def lockExists(self):
+        return os.path.isfile(self.lock_path)
+
+    def readLockFile(self):
+        with open(self.lock_path, 'r', encoding='utf-8') as f:
+            fileString = f.read()
+            return fileString
+
+    def getTimedelta(self, fileString):
+        timeFormat = '%Y-%m-%d %H:%M:%S.%f'
+        oldTime = datetime.datetime.strptime(fileString, timeFormat)
+        now = datetime.datetime.now()
+        timedelta = now - oldTime
+        timedelta = timedelta.total_seconds()
+        return timedelta
 
     def render(self):
         processor = Processor(self.content)
