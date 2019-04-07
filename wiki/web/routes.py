@@ -18,12 +18,10 @@ from wiki.web.forms import EditorForm
 from wiki.web.forms import LoginForm
 from wiki.web.forms import SearchForm
 from wiki.web.forms import URLForm
-from wiki.web.forms import SignupForm
 from wiki.web import current_wiki
 from wiki.web import current_users
 from wiki.web.user import protect
 
-from time import sleep
 
 bp = Blueprint('wiki', __name__)
 
@@ -159,18 +157,9 @@ def user_index():
     pass
 
 
-@bp.route('/user/create/', methods=['GET', 'POST'])
+@bp.route('/user/create/')
 def user_create():
-    form = SignupForm()
-    if form.validate_on_submit():
-        current_users.add_user(form.name.data, form.password.data.encode())
-        user = current_users.get_user(form.name.data)
-        login_user(user)
-        user.set('authenticated', True)
-        flash('Login successful.', 'success')
-        return redirect(request.args.get("next") or url_for('wiki.index'))
-    return render_template('signup.html', form=form)
-        
+    pass
 
 
 @bp.route('/user/<int:user_id>/')
