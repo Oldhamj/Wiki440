@@ -23,6 +23,8 @@ from wiki.web import current_wiki
 from wiki.web import current_users
 from wiki.web.user import protect
 
+from filelock import Timeout, FileLock
+from time import sleep
 
 bp = Blueprint('wiki', __name__)
 
@@ -63,7 +65,9 @@ def create():
 @bp.route('/edit/<path:url>/', methods=['GET', 'POST'])
 @protect
 def edit(url):
-    page = current_wiki.get(url)
+    page = current_wiki.get_or_423(url)
+    if page:
+        page.lock()
     form = EditorForm(obj=page)
     if form.validate_on_submit():
         if not page:
@@ -189,4 +193,8 @@ def user_delete(user_id):
 @bp.errorhandler(404)
 def page_not_found(error):
     return render_template('404.html'), 404
+
+@bp.errorhandler(423)
+def page_not_found(error):
+    return render_template('423.html'), 423
 
