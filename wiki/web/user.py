@@ -30,7 +30,7 @@ class UserManager(object):
             f.write(json.dumps(data, indent=2))
 
     def add_user(self, name, password,
-                 active=True, roles=[], authentication_method=None):
+                 active=True, roles=[], authentication_method='hash'):
         users = self.read()
         if users.get(name):
             return False
@@ -131,12 +131,12 @@ def make_salted_hash(password, salt=None):
     d.update(salt[:32])
     d.update(password)
     d.update(salt[32:])
-    return binascii.hexlify(salt) + d.hexdigest()
+    return binascii.hexlify(salt).decode() + d.hexdigest()
 
 
 def check_hashed_password(password, salted_hash):
     salt = binascii.unhexlify(salted_hash[:128])
-    return make_salted_hash(password, salt) == salted_hash
+    return make_salted_hash(password.encode(), salt) == salted_hash
 
 
 def protect(f):

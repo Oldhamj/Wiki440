@@ -29,7 +29,8 @@
 								{% if current_user.name != null %}
 									<li><a href="{{ url_for('wiki.user_logout') }}">Logout</a></li>
 								{% else %}
-								<li><a href="{{ url_for('wiki.user_login') }}">Login</a></li>
+									<li><a href="{{ url_for('wiki.user_create') }}">Sign Up</a></li>
+									<li><a href="{{ url_for('wiki.user_login') }}">Login</a></li>
 								{% endif %}
 							</ul>
 						</div>
