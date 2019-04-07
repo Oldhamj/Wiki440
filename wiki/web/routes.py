@@ -23,8 +23,6 @@ from wiki.web import current_wiki
 from wiki.web import current_users
 from wiki.web.user import protect
 
-from time import sleep
-
 bp = Blueprint('wiki', __name__)
 
 
