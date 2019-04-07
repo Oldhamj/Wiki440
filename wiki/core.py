@@ -10,6 +10,7 @@ import re
 from flask import abort
 from flask import url_for
 import markdown
+import datetime
 
 
 def clean_url(url):
@@ -166,6 +167,7 @@ class Processor(object):
 
 class Page(object):
     def __init__(self, path, url, new=False):
+        self.lock_path = path + ".lock"
         self.path = path
         self.url = url
         self._meta = OrderedDict()
@@ -179,6 +181,24 @@ class Page(object):
     def load(self):
         with open(self.path, 'r', encoding='utf-8') as f:
             self.content = f.read()
+
+    def lock(self):
+        with open(self.lock_path, 'w', encoding='utf-8') as f:
+            f.write(str(datetime.datetime.now()))
+
+    def isLocked(self):
+        if os.path.isfile(self.lock_path):
+            with open(self.lock_path, 'r', encoding='utf-8') as f:
+                fileString = f.read()
+
+            timeFormat = '%Y-%m-%d %H:%M:%S.%f'
+            oldTime = datetime.datetime.strptime(fileString, timeFormat)
+            now = datetime.datetime.now()
+            timedelta = now - oldTime
+            timedelta = timedelta.total_seconds()
+            return timedelta < 60
+
+        return False
 
     def render(self):
         processor = Processor(self.content)
@@ -261,6 +281,13 @@ class Wiki(object):
         if page:
             return page
         abort(404)
+
+    def get_or_423(self, url):
+        page = self.get(url)
+        if page:
+            if page.isLocked():
+                abort(423)
+            return page
 
     def get_bare(self, url):
         path = self.path(url)
